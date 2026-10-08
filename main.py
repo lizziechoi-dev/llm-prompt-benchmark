@@ -5,7 +5,7 @@ import urllib.error
 import urllib.request
 
 
-def main():
+def call_gemini(prompt):
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         sys.exit("GEMINI_API_KEY 환경변수를 설정해주세요.")
@@ -14,7 +14,7 @@ def main():
         "https://generativelanguage.googleapis.com/v1beta/models/"
         "gemini-3.8-flash:generateContent",
         data=json.dumps(
-            {"contents": [{"parts": [{"text": "안녕하세요"}]}]}
+            {"contents": [{"parts": [{"text": prompt}]}]}
         ).encode("utf-8"),
         headers={"Content-Type": "application/json", "x-goog-api-key": api_key},
         method="POST",
@@ -32,6 +32,11 @@ def main():
     text = "".join(part.get("text", "") for part in parts)
     if not text:
         sys.exit("Gemini API가 텍스트 응답을 반환하지 않았습니다.")
+    return text
+
+
+def main():
+    text = call_gemini("안녕하세요")
     print(text)
 
 
